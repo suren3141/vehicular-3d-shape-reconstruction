@@ -1,10 +1,21 @@
 # Vehicular 3D Shape Reconstruction
 
+This repository contain the code for 3D Shape Reconstruction from monocular images taken from a vehicular camera.
+
+## Dataset
+
+The model uses the apollo3D - car instance dataset.
+
+<!-- <ul> -->
+- The API and the link to download the dataset can be found [here](https://github.com/ApolloScapeAuto/dataset-api/tree/master/car_instance).
+- In addition, the models could also be loaded in `.json` format. These files can be found [here](https://www.kaggle.com/competitions/pku-autonomous-driving/data?select=car_models_json).
+<!-- </ul> -->
+
+
 
 ## Weekly progress report
 
-The progress report can be found in the following link:
-https://docs.google.com/document/d/16RfMfSbtCRv5nYbSyYtppTITUEyDj1bzGLlCNlxb1fs/edit?usp=sharing
+- The progress report can be found [here](https://docs.google.com/document/d/16RfMfSbtCRv5nYbSyYtppTITUEyDj1bzGLlCNlxb1fs/edit?usp=sharing)
 
 
 <!-- ## Getting started
