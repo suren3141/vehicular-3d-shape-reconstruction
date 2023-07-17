@@ -6,11 +6,52 @@ This repository contain the code for 3D Shape Reconstruction from monocular imag
 
 The model uses the apollo3D - car instance dataset.
 
-<!-- <ul> -->
 - The API and the link to download the dataset can be found [here](https://github.com/ApolloScapeAuto/dataset-api/tree/master/car_instance).
 - In addition, the models could also be loaded in `.json` format. These files can be found [here](https://www.kaggle.com/competitions/pku-autonomous-driving/data?select=car_models_json).
-<!-- </ul> -->
+- The [BAAM](https://github.com/gywns6287/BAAM/tree/main) model which gives the SOTA performance on 3D vehicular reconstruction and pose estimation also uses the apolloscape dataset. This model combines all the annotations into a single json. 
 
+The datasets listed above contains the same information. However, the organization of data and the file types used differ. This project uses BAAM as the baseline, as such the data should be organized as follows
+
+```
+${CODE Root}
+└── data
+    └── apollo
+        └── train
+            └── apollo_annot
+            └── images
+        └── val
+            └── apollo_annot
+            └── images
+```
+
+The dataset can be obtained from [here](https://github.com/gywns6287/BAAM/blob/main/for_git/directory.md).
+
+## Baseline Model
+
+The model is built with [BAAM](https://github.com/gywns6287/BAAM/tree/main/) as the baseline.
+- The quick run guide can be found in the BAAM repository.
+- Alternatively, the docker file provided [here](./BAAM/Dockerfile) can be used to build the image and run as follows:
+
+```
+docker build -t baam .
+docker run --gpus all --rm -v $APOLLO_PATH:/mnt/dataset/apollo baam bash
+```
+where APOLLO_PATH is the path to the dataset.
+
+The figure below shows a sample input and the prediction with the BAAM model.
+
+Image             |  Prediction
+:-------------------------:|:-------------------------:
+![](./BAAM/vis_results/171206_081123508_Camera_5.jpg)  |  ![](./BAAM/vis_results/171206_081123508_Camera_5.image_plane.png)
+
+
+## Experiments
+
+BAAM uses Mask R-CNN backbone as a feature extractor. The neck consists of a a bi-contextual attention module for shape reconstruction and attention-guided modeling for pose estimation.
+
+As the initial experiment, the bi-contextual attention module will be replaced with a visual transformer for shape reconstruction...
+
+<!-- ## Evaluation -->
 
 
 ## Weekly progress report
