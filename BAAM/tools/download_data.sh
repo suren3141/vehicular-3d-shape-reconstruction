@@ -22,4 +22,4 @@ tar -xvf 3d-car-understanding-test.tar.gz
 unzip apollo.zip -d BAAM
 
 python symlink.py --data_dir BAAM/train --src_dir train
-python symlink.py --data_dir BAAM/test --src_dir test
+python symlink.py --data_dir BAAM/test --src_dir train

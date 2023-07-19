@@ -35,9 +35,9 @@ The `images` folder contains all the images and the `apollo_annot` folder has al
 
 To download the data directly into this format run the following command
 ```
-./BAAM/tools/download_data.sh $OUTDIR
+./BAAM/tools/download_data.sh $APOLLO_PATH
 ```
-This would organize the data into `$OUTDIR/BAAM` folder.
+This would organize the data into `$APOLLO_PATH/BAAM` folder.
 
 <!-- Note : All the sets listed above contains the same information. However, the organization of data and the file types used differ.  -->
 
@@ -51,11 +51,37 @@ The model is built with [BAAM](https://github.com/gywns6287/BAAM/tree/main/) as 
 docker build -t baam .
 docker run --gpus all --rm -v $APOLLO_PATH:/mnt/dataset/apollo baam bash
 ```
-where APOLLO_PATH is the path to the dataset.
+where `$APOLLO_PATH` is the path to the dataset.
 
-<!-- ## Training -->
+## Training
 
-<!-- ## Evaluation -->
+The training scrips are based on BAAM implementation. The pretrained backbone (bbox and keypoint extractor) is based on [COCO 2017 weights](https://drive.google.com/file/d/1GZyzJLB3FTcs8C7MpZRQWw44liYPyOMD/edit). You can downlod pre-trained 2D module weights (res2net_bifpn.pth) in [here](https://drive.google.com/file/d/1aX_-SfHtXAdE-frgrbrlQYuWddhwX3V3/view?usp=drive_link).
+
+Run the command below for training
+```
+python main.py --train --config $TRAIN_CONFIG
+```
+`$TRAIN_CONFIG` is the configuration used for training with the pretrained res2net_bifpn backbone. The following options are available.
+- [configs/train.yaml](./BAAM/BAAM/configs/train.yaml) : Train with keypoint extractor.
+- [configs/train_no_key.yaml](./BAAM/BAAM/configs/train_no_key.yaml) Train without keypoint extractor
+- TODO
+
+## Inference
+Train the model, or download [pre-trained weights](https://drive.google.com/file/d/1oM-iA5Z-8AOBgX5hUCfAoLX8hcn4YBpp/view?usp=sharing) to the root directory. Then run the command below.
+```
+python main.py --config configs/custom.yaml
+```
+
+## Evaluation
+
+First obtain the result through training or evaluation. This should be saved in `$OUTPUT/res` directory. Then run the command below.
+```
+python evaluation/eval.py --light --gt_dir data/apollo/BAAM/test/apollo_annot  --test_dir outputs/res --res_file outputs/test_results.txt
+```
+By default the A3DP results are written to `test_results.txt`.
+
+
+## Prediction
 
 The figure below shows a sample input and the prediction with the BAAM model.
 
