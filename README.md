@@ -2,15 +2,22 @@
 
 This repository contain the code for 3D Shape Reconstruction from monocular images taken from a vehicular camera.
 
+## Introduction
+
+Vehicular shape reconstruction and pose estimation is a vital step for autonomous driving tasks. While many SOTA works are based on bounding box detection, shape reconstruction has gained interests in recent past for tasks such as digital twin. However, the lack of extensive labeled dataset with a wide range of classes has made shape reconstruction challenging task. While recent models have used the limited dataset for supervised training, this project focuses on moving towards a semi-supervised / self-supervised learning methodology, which would pave the way for unsupervised techniques.
+
 ## Dataset
 
-The model uses the apollo3D - car instance dataset.
+### Apollo3D
 
-- The API and the link to download the dataset can be found [here](https://github.com/ApolloScapeAuto/dataset-api/tree/master/car_instance).
-- In addition, the models could also be loaded in `.json` format. These files can be found [here](https://www.kaggle.com/competitions/pku-autonomous-driving/data?select=car_models_json).
-- The [BAAM](https://github.com/gywns6287/BAAM/tree/main) model which gives the SOTA performance on 3D vehicular reconstruction and pose estimation also uses the apolloscape dataset. This model combines all the annotations into a single json. 
+[Apollo3D](https://apolloscape.auto) dataset is an autonomous driving dataset.
 
-The datasets listed above contains the same information. However, the organization of data and the file types used differ. This project uses BAAM as the baseline, as such the data should be organized as follows
+- The [car instance set](https://github.com/ApolloScapeAuto/dataset-api/tree/master/car_instance) for shape reconstruction contains more information about the dataset, including the API and links to download the dataset.
+- The [Kaggle challenge](https://www.kaggle.com/competitions/pku-autonomous-driving/data?select=car_models_json) for shape reconstruction contains models in `.json` format.
+
+This project uses the [BAAM model](https://github.com/gywns6287/BAAM/tree/main) as the baseline which gives the SOTA performance on 3D vehicular reconstruction and pose estimation. As such the "apollo3D - car instance dataset" should be organized as follows.
+
+
 
 ```
 ${CODE Root}
@@ -24,19 +31,57 @@ ${CODE Root}
             └── images
 ```
 
-The dataset can be obtained from [here](https://github.com/gywns6287/BAAM/blob/main/for_git/directory.md).
+The `images` folder contains all the images and the `apollo_annot` folder has all the annotation combined into a single json. More information can be found [here](https://github.com/gywns6287/BAAM/blob/main/for_git/directory.md).
+
+To download the data directly into this format run the following command
+```
+./BAAM/tools/download_data.sh $APOLLO_PATH
+```
+This would organize the data into `$APOLLO_PATH/BAAM` folder.
+
+<!-- Note : All the sets listed above contains the same information. However, the organization of data and the file types used differ.  -->
 
 ## Baseline Model
 
 The model is built with [BAAM](https://github.com/gywns6287/BAAM/tree/main/) as the baseline.
 - The quick run guide can be found in the BAAM repository.
-- Alternatively, the docker file provided [here](./BAAM/Dockerfile) can be used to build the image and run as follows:
+- Alternatively, the docker file provided [here](./BAAM/Dockerfile) can be used to build the image and run it.
 
 ```
 docker build -t baam .
 docker run --gpus all --rm -v $APOLLO_PATH:/mnt/dataset/apollo baam bash
 ```
-where APOLLO_PATH is the path to the dataset.
+where `$APOLLO_PATH` is the path to the dataset.
+
+## Training
+
+The training scrips are based on BAAM implementation. The pretrained backbone (bbox and keypoint extractor) is based on [COCO 2017 weights](https://drive.google.com/file/d/1GZyzJLB3FTcs8C7MpZRQWw44liYPyOMD/edit). You can downlod pre-trained 2D module weights (res2net_bifpn.pth) in [here](https://drive.google.com/file/d/1aX_-SfHtXAdE-frgrbrlQYuWddhwX3V3/view?usp=drive_link).
+
+Run the command below for training
+```
+python main.py --train --config $TRAIN_CONFIG
+```
+`$TRAIN_CONFIG` is the configuration used for training with the pretrained res2net_bifpn backbone. The following options are available.
+- [configs/train.yaml](./BAAM/BAAM/configs/train.yaml) : Train with keypoint extractor.
+- [configs/train_no_key.yaml](./BAAM/BAAM/configs/train_no_key.yaml) Train without keypoint extractor
+- TODO
+
+## Inference
+Train the model, or download [pre-trained weights](https://drive.google.com/file/d/1oM-iA5Z-8AOBgX5hUCfAoLX8hcn4YBpp/view?usp=sharing) to the root directory. Then run the command below.
+```
+python main.py --config configs/custom.yaml
+```
+
+## Evaluation
+
+First obtain the result through training or evaluation. This should be saved in `$OUTPUT/res` directory. Then run the command below.
+```
+python evaluation/eval.py --light --gt_dir data/apollo/BAAM/test/apollo_annot  --test_dir outputs/res --res_file outputs/test_results.txt
+```
+By default the A3DP results are written to `test_results.txt`.
+
+
+## Prediction
 
 The figure below shows a sample input and the prediction with the BAAM model.
 
@@ -49,7 +94,11 @@ Image             |  Prediction
 
 BAAM uses Mask R-CNN backbone as a feature extractor. The neck consists of a a bi-contextual attention module for shape reconstruction and attention-guided modeling for pose estimation.
 
-As the initial experiment, the bi-contextual attention module will be replaced with a visual transformer for shape reconstruction...
+![](./reports/images/BAAM.png)
+
+To remove the dependency on labels, the keypoints were removed from the object features as the first step. To this end, key-point detector was eliminated from the backbone to observe the drop in the performance of the model.
+
+Next, the bi-contextual attention module will be replaced with a visual transformer for shape reconstruction...
 
 <!-- ## Evaluation -->
 
