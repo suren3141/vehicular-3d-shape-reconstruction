@@ -10,7 +10,6 @@ BASEDIR=$(dirname "$0")
 
 cp "$BASEDIR/symlink.py" "$OUTDIR/symlink.py"
 
-
 echo $OUTDIR
 cd $OUTDIR
 

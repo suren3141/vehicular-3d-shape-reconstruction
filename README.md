@@ -31,7 +31,13 @@ ${CODE Root}
             └── images
 ```
 
-The ``images`` folder contains all the images and the ``apollo_annot`` folder has all the annotation combined into a single json. More information can be found [here](https://github.com/gywns6287/BAAM/blob/main/for_git/directory.md).
+The `images` folder contains all the images and the `apollo_annot` folder has all the annotation combined into a single json. More information can be found [here](https://github.com/gywns6287/BAAM/blob/main/for_git/directory.md).
+
+To download the data directly into this format run the following command
+```
+./BAAM/tools/download_data.sh $OUTDIR
+```
+This would organize the data into `$OUTDIR/BAAM` folder.
 
 <!-- Note : All the sets listed above contains the same information. However, the organization of data and the file types used differ.  -->
 
