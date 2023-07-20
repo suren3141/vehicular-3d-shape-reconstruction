@@ -26,7 +26,7 @@ ${CODE Root}
         └── train
             └── apollo_annot
             └── images
-        └── val
+        └── test
             └── apollo_annot
             └── images
 ```
@@ -96,7 +96,17 @@ BAAM uses Mask R-CNN backbone as a feature extractor. The neck consists of a a b
 
 ![](./reports/images/BAAM.png)
 
+### Remove keypoint extractor
+
 To remove the dependency on labels, the keypoints were removed from the object features as the first step. To this end, key-point detector was eliminated from the backbone to observe the drop in the performance of the model.
+
+Image             |  with keypoints     |  without keypoints
+:-------------------------:|:-------------------------:|:-------------------------:
+![](./BAAM\vis_results\output_no_keys\vis_results\171206_081122658_Camera_5.jpg)  |  ![](./BAAM\vis_results\output_with_keys\vis_results\171206_081122658_Camera_5.image_plane.png) | ![](BAAM\vis_results\output_no_keys\vis_results\171206_081122658_Camera_5.image_plane.png)
+
+TODO : Add quantitative
+
+### Change detection head
 
 Next, the bi-contextual attention module will be replaced with a visual transformer for shape reconstruction...
 

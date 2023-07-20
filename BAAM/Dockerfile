@@ -66,5 +66,5 @@ WORKDIR /workspace/BAAM
 
 ## dataset
 WORKDIR /mnt/dataset/
-RUN ln -s /mnt/dataset/ /workspace/baam/data/apollo
-ENV APOLLO_PATH "/workspace/baam/data/apollo"
+RUN ln -s /mnt/dataset/ /workspace/BAAM/data/apollo
+ENV APOLLO_PATH "/workspace/BAAM/data/apollo"
