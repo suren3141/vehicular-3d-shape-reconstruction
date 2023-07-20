@@ -52,7 +52,6 @@ RUN conda install --quiet pytorch3d -c pytorch3d
 # Open3D
 # RUN pip install open3d==0.14.1
 
-
 ## BAAM
 COPY BAAM /workspace/BAAM
 WORKDIR /workspace/BAAM
@@ -63,10 +62,9 @@ WORKDIR /workspace/BAAM
 # COPY best_rel_model.pth /workspace/BAAM/
 # COPY res2net_bifpn.pth /workspace/BAAM/
 
-# RUN rm -r /workspace/baam/data/apollo
-
 # ENV PYTHONPATH "$PYTHONPATH:/workspace/"
 
 ## dataset
-# WORKDIR /mnt/dataset/
-# RUN ln -s /mnt/dataset/ /workspace/baam/data/apollo
+WORKDIR /mnt/dataset/
+RUN ln -s /mnt/dataset/ /workspace/baam/data/apollo
+ENV APOLLO_PATH "/workspace/baam/data/apollo"
