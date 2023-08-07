@@ -1,3 +1,5 @@
+# docker run --gpus all --rm -it -p 8889:8889 --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ -v E:\Dataset\apolloscape\:/mnt/dataset baam bash
+
 ARG PYTORCH="1.10.0"
 ARG CUDA="11.3"
 ARG CUDNN="8"
@@ -59,8 +61,7 @@ WORKDIR /workspace/BAAM
 # RUN git clone https://github.com/gywns6287/BAAM.git
 # RUN pip install -r /workspace/BAAM/requirements.txt
 
-# COPY best_rel_model.pth /workspace/BAAM/
-# COPY res2net_bifpn.pth /workspace/BAAM/
+COPY weights/* /workspace/BAAM/
 
 # ENV PYTHONPATH "$PYTHONPATH:/workspace/"
 
