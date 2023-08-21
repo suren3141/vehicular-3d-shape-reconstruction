@@ -47,32 +47,57 @@ The model is built with [BAAM](https://github.com/gywns6287/BAAM/tree/main/) as 
 - The quick run guide can be found in the BAAM repository.
 - Alternatively, the docker file provided [here](./BAAM/Dockerfile) can be used to build the image and run it.
 
+### Quickstart
+
+1. Clone the repository and download the pretrained weights as follows.
+
+```
+git clone --recurse-submodules https://gitlab.vision.in.tum.de/s0056/vehicular-3d-shape-reconstruction.git
+```
+2. Download the pre-trained model weights if required as follows
+```
+cd vehicular-3d-shape-reconstruction/BAAM && ./BAAM/tools/download_weights.sh
+```
+3. Setup the environment and install the required packages or build the docker image as follows
 ```
 docker build -t baam .
-docker run --gpus all --rm -v $APOLLO_PATH:/mnt/dataset/apollo baam bash
 ```
-where `$APOLLO_PATH` is the path to the dataset.
+4. Run the docker container making sure that you set the correct `$APOLLO_PATH` to the dataset and `$WEIGHT_PATH` to the pre-trained models.
+```
+docker run --gpus all --rm -it \
+-p 8888:8888 \
+-e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ \
+-v $APOLLO_PATH:/mnt/dataset \
+-v $WEIGHT_PATH:/mnt/weights \
+baam bash
+```
+5. Once the container is running, activate the environment
+```
+source activate baam
+```
 
-## Training
 
-The training scrips are based on BAAM implementation. The pretrained backbone (bbox and keypoint extractor) is based on [COCO 2017 weights](https://drive.google.com/file/d/1GZyzJLB3FTcs8C7MpZRQWw44liYPyOMD/edit). You can downlod pre-trained 2D module weights (res2net_bifpn.pth) in [here](https://drive.google.com/file/d/1aX_-SfHtXAdE-frgrbrlQYuWddhwX3V3/view?usp=drive_link).
+### Training
+
+The training scripts are based on BAAM implementation. The pretrained backbone (bbox and keypoint extractor) is based on [COCO 2017 weights](https://drive.google.com/file/d/1GZyzJLB3FTcs8C7MpZRQWw44liYPyOMD/edit). You can downlod pre-trained 2D module weights (res2net_bifpn.pth) from [here](https://syncandshare.lrz.de/getlink/fiB86FKp5aSFcm6ZN6bHYH/res2net_bifpn.pth) or [here](https://drive.google.com/file/d/1aX_-SfHtXAdE-frgrbrlQYuWddhwX3V3/view?usp=drive_link).
 
 Run the command below for training
 ```
 python main.py --train --config $TRAIN_CONFIG
 ```
-`$TRAIN_CONFIG` is the configuration used for training with the pretrained res2net_bifpn backbone. The following options are available.
-- [configs/train.yaml](./BAAM/BAAM/configs/train.yaml) : Train with keypoint extractor.
-- [configs/train_no_key.yaml](./BAAM/BAAM/configs/train_no_key.yaml) Train without keypoint extractor
-- TODO
+`$TRAIN_CONFIG` is the configuration used for training with the pretrained res2net_bifpn backbone. The configuration files for the experiments conducted can be found in the [configs](./BAAM/BAAM/configs/) folder.
 
-## Inference
+Alternatively, run the code snippet `train_model(cfg, model)` code snippet in the [main.ipynb](./BAAM/BAAM/main.ipynb)
+
+### Inference
 Train the model, or download [pre-trained weights](https://drive.google.com/file/d/1oM-iA5Z-8AOBgX5hUCfAoLX8hcn4YBpp/view?usp=sharing) to the root directory. Then run the command below.
 ```
-python main.py --config configs/custom.yaml
+python main.py --config $TEST_CONFIG
 ```
 
-## Evaluation
+Alternatively, run the code snippet `test_model(cfg, model)` code snippet in the [main.ipynb](./BAAM/BAAM/main.ipynb)
+
+### Evaluation
 
 First obtain the result through training or evaluation. This should be saved in `$OUTPUT/res` directory. Then run the command below.
 ```
@@ -81,7 +106,7 @@ python evaluation/eval.py --light --gt_dir data/apollo/BAAM/test/apollo_annot  -
 By default the A3DP results are written to `test_results.txt`.
 
 
-## Prediction
+### Prediction
 
 The figure below shows a sample input and the prediction with the BAAM model.
 
@@ -92,30 +117,26 @@ Image             |  Prediction
 
 ## Experiments
 
-BAAM uses Mask R-CNN backbone as a feature extractor. The neck consists of a a bi-contextual attention module for shape reconstruction and attention-guided modeling for pose estimation.
+The baseline model used has the following shortcomings:
+- Dependance on keypoint labels
+- Dependance on template shapes
+- 3D shape labels required for supervised training
 
-![](./reports/images/BAAM.png)
+![](./reports/images/shortcomings.png)
 
-### Remove keypoint extractor
+The following objectives were set to overcome these limitations:
+- Remove dependency on keypoint labels and template shapes.
+- Update model to achieve similar performance without additional features.
+- Move towards semi-supervised / unsupervised learning techniques for training.
 
-To remove the dependency on labels, the keypoints were removed from the object features as the first step. To this end, key-point detector was eliminated from the backbone to observe the drop in the performance of the model.
-
-Image   |with keypoints |   without keypoints
-:----------------------:|:----------------------:|:----------------------:
-![](./BAAM/vis_results/output_no_keys/vis_results/171206_081122658_Camera_5.jpg)  |  ![](./BAAM/vis_results/output_with_keys/vis_results/171206_081122658_Camera_5.image_plane.png) | ![](./BAAM/vis_results/output_no_keys/vis_results/171206_081122658_Camera_5.image_plane.png)
-
-TODO : Add quantitative
-
-### Change detection head
-
-Next, the bi-contextual attention module will be replaced with a visual transformer for shape reconstruction...
-
-<!-- ## Evaluation -->
+A detailed report can be found [here](./reports/final_report.pdf) on how these objectives were achieved through multiple experiments.
 
 
-## Weekly progress report
+## Documentation
 
-- The progress report can be found [here](https://docs.google.com/document/d/16RfMfSbtCRv5nYbSyYtppTITUEyDj1bzGLlCNlxb1fs/edit?usp=sharing)
+- The weekly progress report can be found [here](https://docs.google.com/document/d/16RfMfSbtCRv5nYbSyYtppTITUEyDj1bzGLlCNlxb1fs/edit?usp=sharing)
+- The final presentation can be found [here](https://docs.google.com/presentation/d/1VxpvzizF0vpctm1kqmw6QjIc0_3czwvEI6BdjF1ogXg/edit?usp=sharing)
+- The final report can be found [here](./reports/final_report.pdf)
 
 
 <!-- ## Getting started

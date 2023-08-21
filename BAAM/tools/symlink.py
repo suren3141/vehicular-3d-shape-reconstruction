@@ -1,4 +1,4 @@
-## Usage : python symlink.py train/ ../train/
+## Usage : python symlink.py --data_dir train/ --src_dir ../train/
 
 import os
 from glob import glob
