@@ -54,7 +54,7 @@ The model is built with [BAAM](https://github.com/gywns6287/BAAM/tree/main/) as 
 ```
 git clone --recurse-submodules https://gitlab.vision.in.tum.de/s0056/vehicular-3d-shape-reconstruction.git
 ```
-2. Download the pre-trained model weights if required as follows
+2. Download the pre-trained model weights from [here](https://syncandshare.lrz.de/getlink/fiYSLsaGjzJsoTZZacURiq/weights)or by running the command below (optional step)
 ```
 cd vehicular-3d-shape-reconstruction/BAAM && ./BAAM/tools/download_weights.sh
 ```
