@@ -7,7 +7,6 @@ test_files="https://ad-apolloscape.cdn.bcebos.com/3d-car-understanding-test.tar.
 OUTDIR="$1"
 BASEDIR=$(dirname "$0")
 
-
 cp "$BASEDIR/symlink.py" "$OUTDIR/symlink.py"
 
 echo $OUTDIR
