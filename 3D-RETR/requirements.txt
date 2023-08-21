@@ -1,0 +1,11 @@
+einops==0.3.0
+matplotlib==3.3.4
+mlflow==1.17.0
+numpy==1.19.2
+opencv_python==4.5.2.52
+Pillow==10.0.0
+pytorch_lightning==1.5.10
+PyYAML==6.0
+timm==0.4.5
+# torch==1.10.0
+tqdm==4.64.1
