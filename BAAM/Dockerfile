@@ -1,4 +1,9 @@
-# docker run --gpus all --rm -it -p 8889:8889 --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ -v E:\Dataset\apolloscape\:/mnt/dataset baam bash
+
+# docker run --gpus all --rm -it -p 8888:8888 \
+# -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ \
+# -v E:\Dataset\apolloscape\:/mnt/dataset \
+# -v E:\suren\TUM\practical\git\vehicular-3d-shape-reconstruction\BAAM\weights\:/mnt/weights \
+# baam bash
 
 ARG PYTORCH="1.10.0"
 ARG CUDA="11.3"
@@ -61,11 +66,16 @@ WORKDIR /workspace/BAAM
 # RUN git clone https://github.com/gywns6287/BAAM.git
 # RUN pip install -r /workspace/BAAM/requirements.txt
 
-COPY weights/* /workspace/BAAM/
+#COPY weights/ /workspace/BAAM/
 
 # ENV PYTHONPATH "$PYTHONPATH:/workspace/"
 
 ## dataset
 WORKDIR /mnt/dataset/
 RUN ln -s /mnt/dataset/ /workspace/BAAM/data/apollo
+
+## weights
+WORKDIR /mnt/weights/
+RUN ln -s /mnt/weights /workspace/BAAM/weights
+
 ENV APOLLO_PATH "/workspace/BAAM/data/apollo"
